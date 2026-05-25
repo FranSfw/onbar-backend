@@ -1,0 +1,26 @@
+{
+  "name": "onbar-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/env": "^6.0.0",
+    "fastify": "^5.8.5",
+    "firebase-admin": "^13.10.0",
+    "fluent-json-schema": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  }
+}
