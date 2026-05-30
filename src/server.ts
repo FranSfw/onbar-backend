@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import { calibrationRoutes } from './modules/calibrations/calibration.routes';
 import { recipeRoutes } from './modules/recipes/recipe.routes';
+import { userRoutes } from './modules/users/user.routes';
 
 const fastify = Fastify({
   logger: true
@@ -14,6 +15,7 @@ fastify.register(cors, {
 // Endpoints
 fastify.register(calibrationRoutes, { prefix: '/api/calibrations' });
 fastify.register(recipeRoutes, { prefix: '/api/recipes' });
+fastify.register(userRoutes, { prefix: '/api/users' });
 
 fastify.get('/ping', async () => {
   return { status: 'OnBar Machine is Ready ☕' };

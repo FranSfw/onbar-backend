@@ -1,3 +1,9 @@
+export interface GrinderInfo {
+  grinderModel: string;  
+  grinderName: string;
+  setting: string;   
+}
+
 export interface CoffeeDetails {
   name: string;
   roastDate?: string;
@@ -9,12 +15,30 @@ export interface ExtractionParameters {
   waterOut: number;
   timeSeconds: number;
   temperatureCelsius?: number;
-  grindSetting: string;
+  grinder: GrinderInfo;
+}
+
+export interface SensoryRadar {
+  acidity: number;       // Escala 1-5 o 1-10
+  body: number;
+  sweetness: number;
+  balance: number;
+  cleanliness: number;
+  complexity: number;
+}
+
+export interface ExtractionTimeline {
+  sourIntensity: number;
+  sweetIntensity: number;
+  bitterIntensity: number; 
 }
 
 export interface SensoryEvaluation {
-  tasteRating: number;
+  tasteRating: number;      
   tds?: number;
+  radarProfile: SensoryRadar;         
+  timelineProfile: ExtractionTimeline; 
+  roasterNotes?: string;
   notes?: string;
 }
 
