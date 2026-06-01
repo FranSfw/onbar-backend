@@ -138,4 +138,85 @@ export async function recipeRoutes(fastify: FastifyInstance) {
       }
     }
   );
+
+  // 🔍 GET: Obtener el catálogo de recetas de un usuario específico (Para su perfil / mis recetas)
+  fastify.get<{ Params: { userID: string } }>(
+    '/user/:userID', 
+    async (request, reply) => {
+      const { userID } = request.params;
+
+      try {
+        const snapshot = await db.collection('recipes')
+          .where('userID', '==', userID)
+          .orderBy('createdAt', 'desc')
+          .get();
+
+        const userRecipes = snapshot.docs.map(doc => ({
+          recipeID: doc.id,
+          ...doc.data()
+        }));
+
+        return reply.send(userRecipes);
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.code(500).send({ error: 'Error al obtener las recetas del barista.' });
+      }
+    }
+  );
+
+  // 🔍 GET: Obtener los detalles técnicos de una versión ("commit") específica de una receta
+  fastify.get<{ Params: { id: string; versionName: string } }>(
+    '/:id/versions/:versionName',
+    async (request, reply) => {
+      const { id, versionName } = request.params;
+
+      try {
+        const doc = await db.collection('recipes').doc(id).get();
+
+        if (!doc.exists) {
+          return reply.code(404).send({ error: 'La receta no existe.' });
+        }
+
+        const recipeData = doc.data();
+        const specificVersion = recipeData?.versions?.[versionName];
+
+        if (!specificVersion) {
+          return reply.code(404).send({ error: `La versión [${versionName}] no existe en esta receta.` });
+        }
+
+        return reply.send({
+          recipeID: id,
+          versionName,
+          ...specificVersion
+        });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.code(500).send({ error: 'Error al consultar la versión específica.' });
+      }
+    }
+  );
+
+  // 🗑️ DELETE: Eliminar una receta por completo del repositorio
+  fastify.delete<{ Params: { id: string } }>(
+    '/:id',
+    async (request, reply) => {
+      const { id } = request.params;
+
+      try {
+        const recipeRef = db.collection('recipes').doc(id);
+        const doc = await recipeRef.get();
+
+        if (!doc.exists) {
+          return reply.code(404).send({ error: 'No se encontró la receta que deseas eliminar.' });
+        }
+
+        await recipeRef.delete();
+        return reply.send({ message: 'Receta eliminada correctamente del ecosistema OnBar. 🧹' });
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.code(500).send({ error: 'Error al eliminar la receta de Firestore.' });
+      }
+    }
+  );
+  
 }
