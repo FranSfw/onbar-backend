@@ -16,7 +16,8 @@ export interface CafeDetails {
 }
 
 export interface BaristaEmployment {
-  currentCafeId?: string;
+  activeCafes: string[];
+  pendingCafes: string[];
   isVerifiedByCafe: boolean;
 }
 
@@ -58,3 +59,19 @@ export interface UpdateUserInput {
   [key: string]: any;
 }
 
+export interface GrinderDevice {
+  grinderID: string;   // ID único autogenerado para el molino
+  grinderModel: string;// Ej: "Anfim Pratica"
+  grinderName: string; // Ej: "Espresso Barra Principal"
+}
+
+export interface CafeDetails {
+  carouselImages: string[];
+  activeBaristas: string[];
+  pendingBaristas: string[];
+  grinders: GrinderDevice[];
+  location?: {
+    address: string;
+    city: string;
+  };
+}

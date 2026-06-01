@@ -42,9 +42,9 @@ export interface SensoryEvaluation {
   notes?: string;
 }
 
-// Interfaz para lo que el Frontend envía en la petición HTTP Body
 export interface CreateCalibrationInput {
   userID: string;
+  cafeID?: string;
   coffeeDetails: CoffeeDetails;
   parameters: ExtractionParameters;
   sensory?: SensoryEvaluation;
