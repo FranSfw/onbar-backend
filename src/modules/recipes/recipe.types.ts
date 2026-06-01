@@ -1,49 +1,41 @@
 // src/modules/recipes/recipe.types.ts
 
 export type GrindMacroZone = 
-  | 'Turkish' 
-  | 'Espresso' 
-  | 'Moka Pot' 
-  | 'Aeropress' 
-  | 'Medium (V60/Filtrados)' 
-  | 'Medium-Coarse (Chemex)' 
-  | 'Coarse (French Press/Cold Brew)';
+  | 'Turkish' | 'Espresso' | 'Moka Pot' | 'Aeropress' 
+  | 'Medium (V60/Filtrados)' | 'Medium-Coarse (Chemex)' | 'Coarse (French Press/Cold Brew)';
 
-// REF-UNIDADES-ESTANDAR: Catálogo cerrado de unidades permitidas en OnBar
-export type IngredientUnit = 
-  | 'g'       // Gramos (Sólidos)
-  | 'kg'      // Kilogramos (Insumos mayoristas)
-  | 'ml'      // Mililitros (Líquidos ordinarios)
-  | 'l'       // Litros (Grandes lotes de Cold Brew)
-  | 'oz'      // Onzas de peso
-  | 'oz_fl'   // Onzas fluidas (Mixología y Jarabes)
-  | 'dash'    // Toques / Gotas (Bitters o Concentrados)
-  | 'piece';  // Unidades discretas (Garnituras, Canela, etc.)
+export type IngredientUnit = 'g' | 'kg' | 'ml' | 'l' | 'oz' | 'oz_fl' | 'dash' | 'piece';
 
-// Estructura para la Galería Multimedia
 export interface MediaItem {
   type: 'image' | 'video';
-  url: string; // URL de Firebase Storage, YouTube o Vimeo
+  url: string;
 }
 
-// Estructura de ingrediente mejorada y modular
 export interface Ingredient {
   ingredientName: string;   
   quantity: number;
   unit: IngredientUnit;     
   isSubRecipe: boolean;     
-  subRecipeID?: string;     
-  subRecipeVersion?: string;
+  subRecipeID?: string;     // ID de la subreceta conectada (Ej: El Foam apunta al Jarabe, el Matcha apunta al Foam)
 }
 
 export interface RecipeStep {
   stepNumber: number;
   description: string;
-  media?: MediaItem[]; // Videos/Fotos exclusivos de los detalles de este paso
+  media?: MediaItem[];
 }
 
-export interface RecipeVersion {
-  createdAt?: string;
+// 🎯 TODO SE QUEDA EN UN SOLO DOCUMENTO PLANO (Cero historial de versiones estricto)
+export interface CreateRecipeInput {
+  userID: string;
+  name: string;
+  description?: string;
+  privacy: 'public' | 'private';
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  type: 'drink' | 'sub_recipe';
+  gallery: MediaItem[];
+  
+  // 🔌 Los parámetros de preparación entran directo a la raíz
   preparationTime?: number;
   servingType?: string;
   servingsNumber?: number;
@@ -55,17 +47,7 @@ export interface RecipeVersion {
   notes?: string;
 }
 
-export interface CreateRecipeInput {
-  userID: string;
-  name: string;
-  description?: string;
-  privacy: 'public' | 'private';
-  difficulty: 'Easy' | 'Medium' | 'Hard';
-  type: 'drink' | 'sub_recipe';
-  gallery: MediaItem[]; // Galería de identidad visual global de la bebida
-  initialVersion: RecipeVersion;
-}
-
-export interface CreateRecipeVersionInput extends RecipeVersion {
-  versionName?: string; // Declarado aquí correctamente para lectura opcional en las rutas
+// Para el PATCH de edición directa
+export interface UpdateRecipeInput extends Partial<CreateRecipeInput> {
+  [key: string]: any;
 }
