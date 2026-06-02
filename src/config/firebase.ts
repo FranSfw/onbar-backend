@@ -5,14 +5,19 @@ if (!admin.apps.length) {
   const serviceAccountEnv = process.env.FIREBASE_SERVICE_ACCOUNT;
 
   if (serviceAccountEnv) {
-    // Si estamos en Vercel (Producción), parseamos el string JSON de la variable de entorno
     const serviceAccount = JSON.parse(serviceAccountEnv);
+    
+    if (serviceAccount.private_key) {
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
   } else {
-    // Si estás en local, puedes seguir usando tu archivo de desarrollo local (añadido al .gitignore)
-    const serviceAccount = require('../../firebase-key.json');
+    const localKeyPath = '../../firebase-credentials.json';
+    const serviceAccount = require(localKeyPath);
+    
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount)
     });
@@ -20,5 +25,4 @@ if (!admin.apps.length) {
 }
 
 export const db = admin.firestore();
-// Configuración para que ignore campos undefined al hacer PATCH
 db.settings({ ignoreUndefinedProperties: true });
