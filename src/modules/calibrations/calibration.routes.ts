@@ -145,4 +145,72 @@ export async function calibrationRoutes(fastify: FastifyInstance) {
     }
   );
 
+  // 📊 GET: Obtener el promedio analítico sensorial de la cafetería (Para el Radar Chart de Angular)
+  fastify.get<{ Params: { cafeID: string } }>(
+    '/cafe/:cafeID/analytics',
+    async (request, reply) => {
+      const { cafeID } = request.params;
+
+      try {
+        // Tomamos una muestra de las últimas 15 calibraciones de esa barra para calcular tendencias
+        const snapshot = await db.collection('espresso_calibrations')
+          .where('cafeID', '==', cafeID)
+          .orderBy('createdAt', 'desc')
+          .limit(15)
+          .get();
+
+        if (snapshot.empty) {
+          return reply.send({
+            message: 'Aún no hay suficientes calibraciones registradas en esta barra para generar métricas.',
+            acidityAverage: 0, bitternessAverage: 0, bodyAverage: 0, sweetnessAverage: 0, balanceAverage: 0,
+            totalCalibrationsAnalyzed: 0
+          });
+        }
+
+        let totalAcidity = 0;
+        let totalBitterness = 0;
+        let totalBody = 0;
+        let totalSweetness = 0;
+        let totalBalance = 0;
+        let counter = 0;
+
+        snapshot.docs.forEach(doc => {
+          const data = doc.data();
+          // Solo sumamos si el barista completó la evaluación sensorial del tiro
+          if (data.sensory) {
+            totalAcidity += data.sensory.acidity || 0;
+            totalBitterness += data.sensory.bitterness || 0;
+            totalBody += data.sensory.body || 0;
+            totalSweetness += data.sensory.sweetness || 0;
+            totalBalance += data.sensory.balance || 0;
+            counter++;
+          }
+        });
+
+        if (counter === 0) {
+          return reply.send({
+            message: 'Los tiros recientes no incluyen datos de evaluación sensorial.',
+            acidityAverage: 0, bitternessAverage: 0, bodyAverage: 0, sweetnessAverage: 0, balanceAverage: 0,
+            totalCalibrationsAnalyzed: 0
+          });
+        }
+
+        // Estructuramos los promedios flotantes redondeados con precisión a 2 decimales
+        const analyticsPayload = {
+          acidityAverage: parseFloat((totalAcidity / counter).toFixed(2)),
+          bitternessAverage: parseFloat((totalBitterness / counter).toFixed(2)),
+          bodyAverage: parseFloat((totalBody / counter).toFixed(2)),
+          sweetnessAverage: parseFloat((totalSweetness / counter).toFixed(2)),
+          balanceAverage: parseFloat((totalBalance / counter).toFixed(2)),
+          totalCalibrationsAnalyzed: counter
+        };
+
+        return reply.send(analyticsPayload);
+      } catch (error) {
+        fastify.log.error(error);
+        return reply.code(500).send({ error: 'Error al procesar la analítica de la barra.' });
+      }
+    }
+  );
+
 }
