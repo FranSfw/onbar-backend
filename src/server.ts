@@ -30,8 +30,35 @@ fastify.get('/', async () => {
   return { status: 'OnBar Machine is Ready ☕' };
 });
 
-fastify.get('/rb', async () => {
-  return { status: 'hola rebu:]' };
+fastify.get('/rb', async (request, reply) => {
+  reply.type('text/html');
+  return `
+    <html>
+      <head>
+        <title>OnBar Rebudi Page ☕</title>
+        <style>
+          body { 
+            background-color: #fcfaf7; 
+            font-family: sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            color: #7F5539;
+          }
+          img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-top: 20px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Hola rebu</h1>        
+        <img src="https://i.pinimg.com/736x/b5/e8/6f/b5e86fbb16da46729eedd529d60707f8.jpg" alt="Pinterest Coffee Art" />
+      </body>
+    </html>
+  `;
 });
 
 // 🚀 Handler para Vercel Serverless Functions
