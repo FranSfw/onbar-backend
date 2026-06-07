@@ -30,6 +30,10 @@ fastify.get('/', async () => {
   return { status: 'OnBar Machine is Ready ☕' };
 });
 
+fastify.get('/rb', async () => {
+  return { status: 'hola rebu:]' };
+});
+
 // 🚀 Handler para Vercel Serverless Functions
 export default async function handler(req: IncomingMessage, res: ServerResponse) {
   try {
