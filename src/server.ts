@@ -35,7 +35,7 @@ fastify.get('/rb', async (request, reply) => {
   return `
     <html>
       <head>
-        <title>OnBar Rebudi Page ☕</title>
+        <title>OnBar</title>
         <style>
           body { 
             background-color: #fcfaf7; 
