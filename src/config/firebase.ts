@@ -1,5 +1,6 @@
 // src/config/firebase.ts
 import * as admin from 'firebase-admin';
+import { getFirestore } from 'firebase-admin/firestore';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -37,5 +38,5 @@ if (!admin.apps.length) {
   }
 }
 
-export const db = admin.firestore();
+export const db = getFirestore(admin.app(), 'on-bar');
 db.settings({ ignoreUndefinedProperties: true });

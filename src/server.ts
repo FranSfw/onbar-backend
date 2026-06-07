@@ -26,7 +26,7 @@ fastify.register(recipeRoutes, { prefix: '/api/recipes' });
 fastify.register(userRoutes, { prefix: '/api/users' });
 fastify.register(coffeeRoutes, { prefix: '/api/coffees' });
 
-fastify.get('/ping', async () => {
+fastify.get('/', async () => {
   return { status: 'OnBar Machine is Ready ☕' };
 });
 

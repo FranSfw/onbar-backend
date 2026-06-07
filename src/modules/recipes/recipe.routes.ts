@@ -39,13 +39,13 @@ export async function recipeRoutes(fastify: FastifyInstance) {
     try {
       const snapshot = await db.collection('recipes')
         .where('privacy', '==', 'public')
-        .orderBy('createdAt', 'desc')
         .get();
+      // NOTE: Composite index (privacy ASC + createdAt DESC) required in Firebase Console
+      // for Firestore-native ordering. Sorting in-memory until index is created.
 
-      const recipes = snapshot.docs.map(doc => ({
-        recipeID: doc.id,
-        ...doc.data()
-      }));
+      const recipes = snapshot.docs
+        .map(doc => ({ recipeID: doc.id, ...doc.data() }))
+        .sort((a: any, b: any) => (b.createdAt > a.createdAt ? 1 : -1));
 
       return reply.send(recipes);
     } catch (error) {
