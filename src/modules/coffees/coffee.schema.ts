@@ -18,7 +18,7 @@ export const createCoffeeSchema = S.object()
   .prop('roastLevel', S.string().enum(allowedRoastLevels))
   .prop('variety', S.string())
   .prop('tastingNotes', S.array().items(S.string()).default([]))
-  .prop('photoURL', S.string().format('url')) // 🎯 Validación estricta de formato URL para la imagen
+  .prop('photoURL', S.string().format('url'))
   .prop('isActive', S.boolean().default(true));
 
 export const updateCoffeeSchema = S.object()

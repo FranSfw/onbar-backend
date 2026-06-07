@@ -5,6 +5,7 @@ import { calibrationRoutes } from './modules/calibrations/calibration.routes';
 import { recipeRoutes } from './modules/recipes/recipe.routes';
 import { userRoutes } from './modules/users/user.routes';
 import { coffeeRoutes } from './modules/coffees/coffee.routes';
+import type { IncomingMessage, ServerResponse } from 'http';
 
 const fastify = Fastify({ 
   logger: true
@@ -29,10 +30,19 @@ fastify.get('/ping', async () => {
   return { status: 'OnBar Machine is Ready ☕' };
 });
 
-export default async function handler(req: any, res: any) {
-  await fastify.ready();
-  fastify.server.emit('request', req, res);
+// 🚀 Handler para Vercel Serverless Functions
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
+  try {
+    await fastify.ready();
+    fastify.server.emit('request', req, res);
+  } catch (error) {
+    console.error('❌ Error en el handler de Vercel:', error);
+    res.statusCode = 500;
+    res.end(JSON.stringify({ error: 'Internal Server Error' }));
+  }
 }
+
+// 🖥️ Servidor local de desarrollo
 if (process.env.NODE_ENV !== 'production') {
   const start = async () => {
     try {
