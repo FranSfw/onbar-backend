@@ -30,7 +30,7 @@ fastify.get('/', async () => {
   return { status: 'OnBar Machine is Ready ☕' };
 });
 
-fastify.get('/rb', async (request, reply) => {
+fastify.get('/emy', async (request, reply) => {
   reply.type('text/html');
   return `
     <html>
@@ -42,7 +42,7 @@ fastify.get('/rb', async (request, reply) => {
             font-family: sans-serif; 
             text-align: center; 
             padding: 50px; 
-            color: #7F5539;
+            color: #e698bd;
           }
           img { 
             max-width: 100%; 
@@ -54,8 +54,8 @@ fastify.get('/rb', async (request, reply) => {
         </style>
       </head>
       <body>
-        <h1>Hola rebu</h1>        
-        <img src="https://i.pinimg.com/736x/b5/e8/6f/b5e86fbb16da46729eedd529d60707f8.jpg" alt="Pinterest Coffee Art" />
+        <h1>Hola Emy</h1>        
+        <img src="https://i.pinimg.com/1200x/f8/f7/f8/f8f7f812400511a7994578575569e563.jpg" alt="Pinterest Coffee Art" />
       </body>
     </html>
   `;
